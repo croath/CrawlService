@@ -11,12 +11,28 @@ import com.utils.CalUtil;
 import com.utils.StringUtil;
 
 public class XhsModlue {
-	public static String calcSign(Map<String, String> params)  {
+	
+	public static HashMap<String, String> calcSignAndShiled(Map<String, String> paramsCalc)  {
+		
+		HashMap<String, String> result = new HashMap<String, String>();
+		String crypt_method = paramsCalc.remove("crypt_method");
+		String url = paramsCalc.remove("url");
+		String sign = calcSign(paramsCalc);
+		paramsCalc.put("sign", sign);
+		String shiled = calShiled(url, crypt_method, paramsCalc);
+		result.put("sign", sign);
+		result.put("shiled", shiled);
+
+		return result;
+		
+	}
+	
+	
+	
+	private static String calcSign(Map<String, String> params)  {
 		try {
-			String crypt_method = params.remove("crypt_method");	
 			int var1 = 0;
 			String deviceID = params.get("deviceId");
-	
 			ArrayList<String> var3 = new ArrayList<String>();
 			var3.addAll(params.keySet());
 			Collections.sort(var3);
@@ -43,12 +59,10 @@ public class XhsModlue {
 		}
 	}
 	
-	public static String calShiled(Map<String, String> query, String path) {
+	private static String calShiled(String path, String crypt_method, Map<String, String> query) {
 		
 		try {
-			String result="";
-			
-			String crypt_method = query.remove("crypt_method");	
+			String result="";	
 			Map<String, String> queryParams = new HashMap<String, String>();
 			queryParams.putAll(query);
 			queryParams.put("url", path);

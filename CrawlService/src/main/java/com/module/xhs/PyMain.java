@@ -22,7 +22,7 @@ public class PyMain {
 	public static void main(String[] args) {
 		try {
 			
-			user_VfcCode();
+			test_User_VfcCode();
 			//checkCode();
 			//userCodeLogin();
 			//user_activate();
@@ -38,23 +38,48 @@ public class PyMain {
 		}
 	}
 	
+	//
+	private static void test_User_VfcCode() throws Exception {
+		HashMap<String, String> params = new LinkedHashMap<String, String>();
+		
+		String api = "/api/sns/v1/system_service/vfc_code";
+		params.put("deviceId", "B60DCB34-D088-4B58-B7AE-45FBA1B22B6B");
+		params.put("device_fingerprint", "20190102161106ec4a4ba2c366f03746775b3f22b0bde9015d1fb51eae3b63");
+		params.put("device_fingerprint1", "20190102161106ec4a4ba2c366f03746775b3f22b0bde9015d1fb51eae3b63");
+		params.put("lang", "zh");
+		params.put("phone", "18681544318");
+		params.put("platform", "iOS");
+		params.put("sid", "session.1557818110169391090697");
+		params.put("type", "login");
+		params.put("zone", "86");
+		params.put("t", "1557818347");
+		params.put("url", api);
+		params.put("crypt_method", "eac4e6e24b69082b");
+		
+		
+		HashMap<String, String> hashMap = XhsModlue.calcSignAndShiled(params);
+		
+		
+		xhsGet(api, params, hashMap);
+		
+	}
 	
+	private static void xhsGet(String api, HashMap<String, String> params, HashMap<String, String> hashMap) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("https://www.xiaohongshu.com").append(api).append("?");
+		for (Map.Entry<String, String> entry : params.entrySet()) {
+			sb.append(entry.getKey() + "=" + entry.getValue() + "&");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		requestGet(sb.toString(), hashMap.get("shiled"));
+		
+	}
+
 	private static void checkCode() {
 		// TODO Auto-generated method stub
 		HashMap<String, String> query = new LinkedHashMap<String, String>();
-		String url = "?"
-				+ "code=191801&"
-				+ "deviceId=BC7F7299-5E59-4DBD-A766-09B43E1C55C3&"
-				+ "device_fingerprint=20190514151504b9111df83ee8a302f95978a60debfcab01ec4d7b7756a340&"
-				+ "device_fingerprint1=20190514151504b9111df83ee8a302f95978a60debfcab01ec4d7b7756a340&"
-				+ "lang=zh&"
-				+ "phone=18681544318&"
-				+ "platform=iOS&"
-				+ "sid=session.1557828008805038672883&"
-				+ "sign=4b6d2fe29e0b30d3bbccc8216664d00e&"
-				+ "t=1557828049&"
-				+ "zone=86";
 		
+		String api = "/api/sns/v1/system_service/check_code";
 		query.put("code", "191801");
 		query.put("deviceId", "B60DCB34-D088-4B58-B7AE-45FBA1B22B6B");
 		query.put("device_fingerprint", "20190102161106ec4a4ba2c366f03746775b3f22b0bde9015d1fb51eae3b63");
@@ -65,50 +90,17 @@ public class PyMain {
 		query.put("sid", "session.1557818110169391090697");
 		query.put("zone", "86");
 		query.put("t", "1557818347");
-		query.put("t", "1557818347");
+		query.put("url", "/api/sns/v1/system_service/check_code");
 		
-		query.put("sign", XhsModlue.calcSign(query));
-		String shiled = XhsModlue.calShiled(query, "/api/sns/v1/system_service/check_code");
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("https://www.xiaohongshu.com/api/sns/v1/system_service/check_code?");
-		for (Map.Entry<String, String> entry : query.entrySet()) {
-			sb.append(entry.getKey() + "=" + entry.getValue() + "&");
-		}
-		sb.deleteCharAt(sb.length() - 1);
-		System.out.println(sb.toString());
-		requestGet(sb.toString(), shiled);
-	}
-
-
-	private static void user_VfcCode() throws Exception {
-		HashMap<String, String> query = new LinkedHashMap<String, String>();
-	
+		HashMap<String, String> hashMap = XhsModlue.calcSignAndShiled(query);
 		
-		query.put("deviceId", "B60DCB34-D088-4B58-B7AE-45FBA1B22B6B");
-		query.put("device_fingerprint", "20190102161106ec4a4ba2c366f03746775b3f22b0bde9015d1fb51eae3b63");
-		query.put("device_fingerprint1", "20190102161106ec4a4ba2c366f03746775b3f22b0bde9015d1fb51eae3b63");
-		query.put("lang", "zh");
-		query.put("phone", "18681544318");
-		query.put("platform", "iOS");
-		query.put("sid", "session.1557818110169391090697");
-		query.put("type", "login");
-		query.put("zone", "86");
-		query.put("t", "1557818347");
-		query.put("sign", XhsModlue.calcSign(query));
 		
-		query.put("crypt_method", "eac4e6e24b69082b");
-		String shiled = XhsModlue.calShiled(query, "/api/sns/v1/system_service/vfc_code");
-		StringBuilder sb = new StringBuilder();
-		sb.append("https://www.xiaohongshu.com/api/sns/v1/system_service/vfc_code?");
-		for (Map.Entry<String, String> entry : query.entrySet()) {
-			sb.append(entry.getKey() + "=" + entry.getValue() + "&");
-		}
-		sb.deleteCharAt(sb.length() - 1);
-		System.out.println(sb.toString());
-		requestGet(sb.toString(), shiled);
+		xhsGet(api, query, hashMap);
 		
 	}
+
+    
+
 
 
 	private static void user_activate() throws Exception {
@@ -123,10 +115,21 @@ public class PyMain {
 		query.put("lang", "zh-lang");
 		query.put("t", "1556437250882");
 		
-		String sign = XhsModlue.calcSign(query);
-		query.put("sign", sign);
-		String shiled = XhsModlue.calShiled(query, "/api/sns/v1/user/activate");
+	    query.put("url", "/api/sns/v1/system_service/check_code");
+		
+	    String api = "/api/sns/v1/system_service/check_code";
+		HashMap<String, String> hashMap = XhsModlue.calcSignAndShiled(query);
+		
+		
+		xhsPost(api,query, hashMap);
+		
+		
+	}
 
+
+
+	private static void xhsPost(String api, HashMap<String, String> query, HashMap<String, String> hashMap) {
+		
 		String requestUrl = "https://www.xiaohongshu.com/api/sns/v1/user/activate";
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, String> entry : query.entrySet()) {
@@ -139,7 +142,7 @@ public class PyMain {
 			final Request request = new Request.Builder().url(requestUrl)
 					.header("User-Agent",
 							"Dalvik/1.6.0 (Linux; U; Android 4.4.4; HM2014811 Build/KTU84Q) Resolution/720*1280 Version/5.22.0 Build/5220137 Device/(Xiaomi;HM2014811)")
-					.header("shield", shiled)
+					.header("shield", query.get("shiled"))
 					.header("device_id", "60eef661-b43f-33b4-b600-c24a199d4a09")
 					.post(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), requestBody))
 					.build();
@@ -150,13 +153,6 @@ public class PyMain {
 			e.printStackTrace();
 		}
 
-	}
-
-	private static void test() {
-		byte[] data = StringUtil.toByteArray("eac4e6e24b69082b");
-		String device_id = "B60DCB34-D088-4B58-B7AE-45FBA1B22B6B";
-		String alg = XhsModlue.D0(data, device_id);
-		System.out.println("alg:"+alg);
 	}
 
 	private static void userCodeLogin() throws Exception {
@@ -198,12 +194,13 @@ public class PyMain {
 		
 		query.put("zone", "86");
 		query.put("t", "1557828049");
-		String sign = XhsModlue.calcSign(query);
-		query.put("sign", sign);
 		
-		String shiled = XhsModlue.calShiled(query, "/api/sns/v4/user/login/code");
-
-		//"afc64d8205151f49bcd4bba6dc185c2d";
+		
+		
+				
+		
+		//String shiled = XhsModlue.calShiled("/api/sns/v4/user/login/code", "eac4e6e24b69082b", query);
+		
 		String requestUrl = "https://www.xiaohongshu.com/api/sns/v4/user/login/code";
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, String> entry : query.entrySet()) {
@@ -216,7 +213,7 @@ public class PyMain {
 			final Request request = new Request.Builder().url(requestUrl)
 					.header("User-Agent",
 							"Dalvik/1.6.0 (Linux; U; Android 4.4.4; HM2014811 Build/KTU84Q) Resolution/720*1280 Version/5.22.0 Build/5220137 Device/(Xiaomi;HM2014811)")
-					.header("shield", shiled)
+					.header("shield", "")
 					.header("device_id", "60eef661-b43f-33b4-b600-c24a199d4a09")
 					.post(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), requestBody))
 					.build();
@@ -248,10 +245,10 @@ public class PyMain {
 		query.put("channel", "YingYongBao");
 		query.put("lang", "zh-lang");
 		query.put("t", "1556437250882");
-		String sign = XhsModlue.calcSign(query);
-		query.put("sign", sign);
-		String shiled = XhsModlue.calShiled(query, "/api/sns/v4/user/login/social");
-
+		
+		
+		
+		
 		String requestUrl = "https://www.xiaohongshu.com/api/sns/v4/user/login/social";
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, String> entry : query.entrySet()) {
@@ -264,7 +261,7 @@ public class PyMain {
 			final Request request = new Request.Builder().url(requestUrl)
 					.header("User-Agent",
 							"Dalvik/1.6.0 (Linux; U; Android 4.4.4; HM2014811 Build/KTU84Q) Resolution/720*1280 Version/5.22.0 Build/5220137 Device/(Xiaomi;HM2014811)")
-					.header("shield", shiled)
+					.header("shield", "")
 					.header("device_id", "60eef661-b43f-33b4-b600-c24a199d4a09")
 					.post(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), requestBody))
 					.build();
@@ -288,9 +285,9 @@ public class PyMain {
 		query.put("sid", "session.1547780789878540128");
 		query.put("lang", "en");
 		query.put("t", "1550129662");
-		query.put("sign", XhsModlue.calcSign(query));
-		String shiled = XhsModlue.calShiled(query, "/api/sns/v3/user/55519d7cb203d93d4c2885ed/info");
-
+		//query.put("sign", XhsModlue.calcSign(query));
+		//String shiled = XhsModlue.calShiled("/api/sns/v3/user/55519d7cb203d93d4c2885ed/info", "eac4e6e24b69082b", query);
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("https://www.xiaohongshu.com/api/sns/v3/user/55519d7cb203d93d4c2885ed/info?");
 		for (Map.Entry<String, String> entry : query.entrySet()) {
@@ -298,7 +295,7 @@ public class PyMain {
 		}
 		sb.deleteCharAt(sb.length() - 1);
 		System.out.println(sb.toString());
-		requestGet(sb.toString(), shiled);
+		requestGet(sb.toString(), "");
 	}
 	private static void userNotes() throws Exception {
 		HashMap<String, String> query = new LinkedHashMap<String, String>();
@@ -320,9 +317,7 @@ public class PyMain {
 		query.put("sid", "session.1547780789878540128");
 		query.put("lang", "en");
 		query.put("t", "1550129664");
-		query.put("sign", XhsModlue.calcSign(query));
-
-		String shiled = XhsModlue.calShiled(query, "/api/sns/v2/note/user/55519d7cb203d93d4c2885ed");
+	
 		StringBuilder sb = new StringBuilder();
 		sb.append("https://www.xiaohongshu.com/api/sns/v2/note/user/55519d7cb203d93d4c2885ed?");
 		for (Map.Entry<String, String> entry : query.entrySet()) {
@@ -331,7 +326,7 @@ public class PyMain {
 		sb.deleteCharAt(sb.length() - 1);
 		System.out.println(sb.toString());
 
-		requestGet(sb.toString(), shiled);
+		requestGet(sb.toString(), "");
 	}
 
 	private static void noteSearch() throws Exception {
@@ -351,9 +346,11 @@ public class PyMain {
 		query.put("sid", "session.1547780789878540128");
 		query.put("lang", "en");
 		query.put("t", "" + System.currentTimeMillis() / 1000);
-		query.put("sign", XhsModlue.calcSign(query));
-		String shiled = XhsModlue.calShiled(query, "/api/sns/v8/search/notes");
-		System.out.println("shiled:"+ shiled);
+		//query.put("sign", XhsModlue.calcSign(query));
+		
+		//String shiled = XhsModlue.calShiled("/api/sns/v8/search/notes", "eac4e6e24b69082b", query);
+		
+		//System.out.println("shiled:"+ shiled);
 		StringBuilder sb = new StringBuilder();
 		sb.append("https://www.xiaohongshu.com/api/sns/v8/search/notes?");
 
@@ -363,7 +360,7 @@ public class PyMain {
 		sb.deleteCharAt(sb.length() - 1);
 		System.out.println(sb.toString());
 
-		requestGet(sb.toString(), shiled);
+		requestGet(sb.toString(), "");
 	}
 
 	private static void requestGet(String requestUrl, String shiled) {
@@ -382,5 +379,22 @@ public class PyMain {
 			e.printStackTrace();
 		}
 	}
-
+	
+	
+	private static void xhsGet(String requestUrl, String shiled) {
+		try {
+			OkHttpClient okHttpClient = new OkHttpClient();
+			final Request request = new Request.Builder().url(requestUrl)
+					.header("Authorization", "session.1547780789878540128")
+					.header("device_id", "425cef0d-33bb-374e-bdc3-deda9c344722")
+					.header("User-Agent",
+							"Dalvik/1.6.0 (Linux; U; Android 4.4.4; HM2014811 Build/KTU84Q) Resolution/720*1280 Version/5.22.0 Build/5220137 Device/(Xiaomi;HM2014811)")
+					.header("shield", shiled).build();
+			Call call = okHttpClient.newCall(request);
+			Response response = call.execute();
+			System.out.println("onResponse: " + response.body().string());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
